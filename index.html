@@ -1,1 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phaser Game</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <style>
+        /* 페이지가 로드되었을 때, 게임을 화면에 꽉 차게 표시하도록 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Phaser.js 설정 및 게임 초기화
+        const config = {
+            type: Phaser.AUTO,   // Phaser 엔진이 자동으로 캔버스 또는 WebGL을 선택
+            width: window.innerWidth,  // 화면 크기에 맞게 자동 조정
+            height: window.innerHeight,
+            physics: {
+                default: "arcade",
+                arcade: {
+                    gravity: { y: 0 },  // 중력 없음
+                    debug: false         // 디버깅 표시 끄기
+                }
+            },
+            scene: {
+                preload,
+                create,
+                update
+            }
+        };
 
+        const game = new Phaser.Game(config);  // 게임 객체 생성
+
+        let player;
+
+        // 게임 자원 로드
+        function preload() {
+            this.load.image('player', 'assets/player.png'); // player 이미지
+        }
+
+        // 게임 설정
+        function create() {
+            player = this.physics.add.sprite(100, 100, 'player');
+            player.setCollideWorldBounds(true);  // 화면 밖으로 나가지 않게 설정
+
+            // 터치 입력 설정
+            this.input.on('pointerdown', function (pointer) {
+                // 플레이어가 터치한 곳으로 이동
+                this.physics.moveTo(player, pointer.x, pointer.y, 200); 
+            }, this);
+        }
+
+        // 게임 업데이트
+        function update() {
+            // 플레이어의 현재 상태 업데이트
+            if (player.x === player.input.x && player.y === player.input.y) {
+                player.setVelocity(0);
+            }
+        }
+    </script>
+</body>
+</html>
